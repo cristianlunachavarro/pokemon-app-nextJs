@@ -32,4 +32,16 @@ const getFavorites = () => {
   return JSON.parse(localStorage.getItem("favorites") || "[]");
 };
 
-export { toggleFavorites, getFavorites, pokemonIsInFavorites };
+const deleteFromFavorites = (pokeId: number) => {
+  if (typeof window === "undefined") return false;
+  const { localStorage } = window;
+
+  let favorites = getFavorites()
+  favorites = favorites.filter((f: any) => f !== pokeId)
+  
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+  return getFavorites()
+
+}
+
+export { toggleFavorites, getFavorites, pokemonIsInFavorites, deleteFromFavorites };

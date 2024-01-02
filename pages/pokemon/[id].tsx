@@ -79,26 +79,26 @@ const PokemonPage: FC<props> = ({ pokemon }) => {
                 <Image
                   src={sprites.front_default}
                   alt={name}
-                  width={100}
-                  height={100}
+                  width={150}
+                  height={150}
                 />
                 <Image
                   src={sprites.back_default}
                   alt={name}
-                  width={100}
-                  height={100}
+                  width={150}
+                  height={150}
                 />
                 <Image
                   src={sprites.front_shiny}
                   alt={name}
-                  width={100}
-                  height={100}
+                  width={150}
+                  height={150}
                 />
                 <Image
                   src={sprites.back_shiny}
                   alt={name}
-                  width={100}
-                  height={100}
+                  width={150}
+                  height={150}
                 />
               </Container>
             </Card.Body>

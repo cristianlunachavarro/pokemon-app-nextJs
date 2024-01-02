@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 
 import { PokemonListResponse, Pokemon, SmallInfoPokemon } from "@/interfaces";
 import { GetStaticPaths, GetStaticProps } from "next";
