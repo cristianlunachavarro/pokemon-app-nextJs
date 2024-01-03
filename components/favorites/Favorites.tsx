@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 
-import { FavoritePokemonList, Pokemon } from "@/interfaces";
+import { Pokemon } from "@/interfaces";
 import { Card, Grid, Text } from "@nextui-org/react";
 import { useRouter } from "next/router";
 
@@ -14,7 +14,7 @@ interface typeProps {
   slot: number;
 }
 
-const Favorites: FC<{ pokemons: FavoritePokemonList; handleDeletePokemon: (pokeId: number) => void }> = ({ pokemons, handleDeletePokemon }) => {
+const Favorites: FC<{ pokemons: Pokemon[]; handleDeletePokemon: (pokeId: number) => void }> = ({ pokemons, handleDeletePokemon }) => {
   const router = useRouter();
 
   const handleClickedPokemon = (pokemonName: string) => {
@@ -38,6 +38,7 @@ const Favorites: FC<{ pokemons: FavoritePokemonList; handleDeletePokemon: (pokeI
                   src={pokemon.sprites?.other?.dream_world.front_default}
                   width="100%"
                   height={150}
+                  style={{ marginBottom: '5px' }}
                   onClick={() => handleClickedPokemon(pokemon.name)}
                 />
                 <Text transform="capitalize" h4>
@@ -51,7 +52,7 @@ const Favorites: FC<{ pokemons: FavoritePokemonList; handleDeletePokemon: (pokeI
                       </Text>
                     ))}
                   </div>
-                  <DeleteOutlinedIcon onClick={() => handleDeletePokemon(pokemon.id)} style={{ cursor: 'pointer' }}/>
+                  <DeleteOutlinedIcon onClick={() => handleDeletePokemon(pokemon.id)} style={{ cursor: 'pointer' }} />
                 </div>
               </Card>
             </Grid>

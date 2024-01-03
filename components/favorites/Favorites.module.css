@@ -1,9 +1,6 @@
 .descriptionContainer {
     display: flex;
     justify-content: space-between;
-    margin-top: 10px;
+    margin-top: 2.5px;
     padding: 10px;
-}
-
-.typesContainer {
 }

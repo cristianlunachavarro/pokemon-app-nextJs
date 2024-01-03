@@ -1,6 +1,7 @@
-import { Text, useTheme, Image, Link } from "@nextui-org/react";
+import { Text, useTheme, Image, Link, Input } from "@nextui-org/react";
 import NextLink from "next/link";
 import React from "react";
+import SearchBar from "../searchBar";
 
 export const NavBar = () => {
   const { theme } = useTheme();
@@ -39,8 +40,9 @@ export const NavBar = () => {
           </Link>
         </NextLink>
       </div>
+      <SearchBar />
       <NextLink href="/favorites" passHref>
-        <Text>Favorites</Text>
+        <Text>FAVORITES</Text>
       </NextLink>
     </div>
   );
