@@ -14,7 +14,7 @@ const Pokemon: FC<props> = (props) => {
   return (
     <Grid.Container gap={2} justify="flex-center">
       {pokemons.map((pokemon) => {
-        return <PokemonCard key={pokemon.id} pokemon={pokemon}/>
+        return <PokemonCard key={pokemon.id} pokemon={pokemon} />
       })}
     </Grid.Container>
   );

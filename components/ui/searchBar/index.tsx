@@ -1,16 +1,29 @@
 // components/SearchBar.tsx
 import React, { useState, useEffect } from 'react';
-import { Input, Button } from '@nextui-org/react';
+import { Input } from '@nextui-org/react';
 import { useRouter } from 'next/router';
 import { pokeApi } from '@/api';
 import { PokemonListResponse } from '@/interfaces';
 
-import styles from './searchBar.module.css';
+const suggestionStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    margin: '5% 0',
+    width: '70%',
+    borderRadius: '4px',
+    zIndex: 999,
+    color: 'white',
+    textAlign: 'center'
+};
+
+const NUMBEROFSUGGESTIONS = 5;
 
 const SearchBar: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [selectedSuggestion, setSelectedSuggestion] = useState<string | null>(null);
+    const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState<number | null>(null);
 
     const router = useRouter();
 
@@ -20,6 +33,8 @@ const SearchBar: React.FC = () => {
         } else if (searchTerm.trim() !== '') {
             router.push(`/name/${searchTerm}`);
         }
+        setSearchTerm('')
+        setSuggestions([])
     };
 
     const handleInputChange = async (newValue: string) => {
@@ -36,7 +51,8 @@ const SearchBar: React.FC = () => {
 
             const filteredNames = allPokemonNames.filter((name) =>
                 name.toLowerCase().includes(newValue.toLowerCase())
-            );
+            ).slice(0, NUMBEROFSUGGESTIONS);
+
             setSuggestions(filteredNames);
         } catch (error) {
             console.error('Error searching Pokémon:', error);
@@ -44,35 +60,86 @@ const SearchBar: React.FC = () => {
         }
     };
 
-    useEffect(() => {
-        handleSearch();
-    }, [selectedSuggestion]);
-
     const handleSuggestionClick = (suggestion: string) => {
         setSelectedSuggestion(suggestion);
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            handleSearch();
+        } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            handleArrowDown();
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            handleArrowUp();
+        }
+    };
+
+    const handleArrowDown = () => {
+        if (suggestions.length > 0) {
+            const newIndex = selectedSuggestion !== null ? Math.min(selectedSuggestionIndex + 1, suggestions.length - 1) : 0;
+            setSelectedSuggestionIndex(newIndex);
+            setSelectedSuggestion(suggestions[newIndex]);
+        }
+    };
+
+    const handleArrowUp = () => {
+        if (suggestions.length > 0) {
+            const newIndex = selectedSuggestion !== null ? Math.max(selectedSuggestionIndex - 1, 0) : suggestions.length - 1;
+            setSelectedSuggestionIndex(newIndex);
+            setSelectedSuggestion(suggestions[newIndex]);
+        }
+    };
+
     return (
-        <div className='container'>
-            <div className={styles.inputContainer}>
+        <div style={{ position: 'relative' }}>
+            <div style={{ display: 'flex', width: '100%', position: 'relative' }}>
                 <Input
                     type="text"
                     value={searchTerm}
                     onChange={(e) => handleInputChange(e.target.value)}
                     placeholder="Search for a Pokémon"
-                    className={styles.input}
+                    style={{
+                        border: '2px solid white',
+                        padding: '0 20px',
+                        width: '100%',
+                        borderRadius: '20px'
+                    }}
+                    onKeyDown={handleKeyDown}
                 />
-                <button className={styles.button} onClick={handleSearch}>
+                <button
+                    onClick={handleSearch}
+                    style={{
+                        border: '2px solid white',
+                        padding: '5px 15px',
+                        borderRadius: '20px',
+                        backgroundColor: 'black',
+                        margin: '0 2.5%',
+                        cursor: 'pointer',
+                    }}
+                >
                     Search
                 </button>
             </div>
-            <ul className={styles.suggestion}>
-                {suggestions.map((suggestion, index) => (
-                    <li key={index} onClick={() => handleSuggestionClick(suggestion)} className={styles.options}>
-                        {suggestion}
-                    </li>
-                ))}
-            </ul>
+            {suggestions.length > 0 && (
+                <ul style={suggestionStyle}>
+                    {suggestions.map((suggestion, index) => (
+                        <li
+                            key={index}
+                            onClick={() => handleSuggestionClick(suggestion)}
+                            style={{
+                                padding: '8px',
+                                cursor: 'pointer',
+                                backgroundColor: selectedSuggestionIndex === index ? 'rgb(128, 163, 250)' : 'rgb(110, 150, 180)',
+                                textTransform: 'capitalize'
+                            }}
+                        >
+                            {suggestion}
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 };
