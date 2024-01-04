@@ -1,4 +1,3 @@
-// components/SearchBar.tsx
 import React, { useState, useEffect } from 'react';
 import { Input } from '@nextui-org/react';
 import { useRouter } from 'next/router';
@@ -14,7 +13,7 @@ const suggestionStyle: React.CSSProperties = {
     borderRadius: '4px',
     zIndex: 999,
     color: 'white',
-    textAlign: 'center'
+    textAlign: 'center',
 };
 
 const NUMBEROFSUGGESTIONS = 5;
@@ -24,6 +23,7 @@ const SearchBar: React.FC = () => {
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [selectedSuggestion, setSelectedSuggestion] = useState<string | null>(null);
     const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState<number | null>(null);
+    const [selectedPokemonChange, setSelectedPokemonChange] = useState<boolean>(false);
 
     const router = useRouter();
 
@@ -33,35 +33,15 @@ const SearchBar: React.FC = () => {
         } else if (searchTerm.trim() !== '') {
             router.push(`/name/${searchTerm}`);
         }
-        setSearchTerm('')
-        setSuggestions([])
-    };
-
-    const handleInputChange = async (newValue: string) => {
-        setSearchTerm(newValue);
-
-        if (newValue.length < 3) {
-            setSuggestions([]);
-            return;
-        }
-
-        try {
-            const response = await pokeApi.get<PokemonListResponse>(`/pokemon?limit=1000`);
-            const allPokemonNames = response.data.results.map((result) => result.name);
-
-            const filteredNames = allPokemonNames.filter((name) =>
-                name.toLowerCase().includes(newValue.toLowerCase())
-            ).slice(0, NUMBEROFSUGGESTIONS);
-
-            setSuggestions(filteredNames);
-        } catch (error) {
-            console.error('Error searching Pokémon:', error);
-            setSuggestions([]);
-        }
+        setSelectedSuggestion('');
+        setSearchTerm('');
+        setSuggestions([]);
+        setSelectedSuggestionIndex(0)
     };
 
     const handleSuggestionClick = (suggestion: string) => {
         setSelectedSuggestion(suggestion);
+        setSelectedPokemonChange(!selectedPokemonChange);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -91,6 +71,41 @@ const SearchBar: React.FC = () => {
             setSelectedSuggestion(suggestions[newIndex]);
         }
     };
+
+    const handleSuggestionMouseEnter = (index: number) => {
+        setSelectedSuggestionIndex(index);
+    };
+
+    const handleSuggestionMouseLeave = () => {
+        setSelectedSuggestionIndex(null);
+    };
+
+    const handleInputChange = async (newValue: string) => {
+        setSearchTerm(newValue);
+
+        if (newValue.length < 3) {
+            setSuggestions([]);
+            return;
+        }
+
+        try {
+            const response = await pokeApi.get<PokemonListResponse>(`/pokemon?limit=1000`);
+            const allPokemonNames = response.data.results.map((result) => result.name);
+
+            const filteredNames = allPokemonNames.filter((name) =>
+                name.toLowerCase().includes(newValue.toLowerCase())
+            ).slice(0, NUMBEROFSUGGESTIONS);
+
+            setSuggestions(filteredNames);
+        } catch (error) {
+            console.error('Error searching Pokémon:', error);
+            setSuggestions([]);
+        }
+    };
+
+    useEffect(() => {
+        handleSearch()
+    }, [selectedPokemonChange])
 
     return (
         <div style={{ position: 'relative' }}>
@@ -128,11 +143,14 @@ const SearchBar: React.FC = () => {
                         <li
                             key={index}
                             onClick={() => handleSuggestionClick(suggestion)}
+                            onMouseEnter={() => handleSuggestionMouseEnter(index)}
+                            onMouseLeave={handleSuggestionMouseLeave}
                             style={{
                                 padding: '8px',
                                 cursor: 'pointer',
                                 backgroundColor: selectedSuggestionIndex === index ? 'rgb(128, 163, 250)' : 'rgb(110, 150, 180)',
-                                textTransform: 'capitalize'
+                                textTransform: 'capitalize',
+                                transition: 'background-color 0.3s ease',
                             }}
                         >
                             {suggestion}
@@ -143,5 +161,6 @@ const SearchBar: React.FC = () => {
         </div>
     );
 };
+
 
 export default SearchBar;

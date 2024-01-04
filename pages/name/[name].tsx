@@ -16,6 +16,7 @@ interface props {
 }
 
 const PokemonByNamePage: FC<props> = ({ pokemon }) => {
+
   const { name, sprites, id } = pokemon;
   const { other } = sprites;
 
