@@ -3,6 +3,7 @@ import { Input } from '@nextui-org/react';
 import { useRouter } from 'next/router';
 import { pokeApi } from '@/api';
 import { PokemonListResponse } from '@/interfaces';
+import Loader from '../loader';
 
 const suggestionStyle: React.CSSProperties = {
     position: 'absolute',
@@ -24,6 +25,7 @@ const SearchBar: React.FC = () => {
     const [selectedSuggestion, setSelectedSuggestion] = useState<string | null>(null);
     const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState<number | null>(null);
     const [selectedPokemonChange, setSelectedPokemonChange] = useState<boolean>(false);
+    const [isLoading, setIsloading] = useState<boolean>(false)
 
     const router = useRouter();
 
@@ -37,6 +39,7 @@ const SearchBar: React.FC = () => {
         setSearchTerm('');
         setSuggestions([]);
         setSelectedSuggestionIndex(0)
+        setIsloading(false)
     };
 
     const handleSuggestionClick = (suggestion: string) => {
@@ -58,7 +61,7 @@ const SearchBar: React.FC = () => {
 
     const handleArrowDown = () => {
         if (suggestions.length > 0) {
-            const newIndex = selectedSuggestion !== null ? Math.min(selectedSuggestionIndex + 1, suggestions.length - 1) : 0;
+            const newIndex = selectedSuggestionIndex !== null ? Math.min(selectedSuggestionIndex + 1, suggestions.length - 1) : 0;
             setSelectedSuggestionIndex(newIndex);
             setSelectedSuggestion(suggestions[newIndex]);
         }
@@ -66,7 +69,7 @@ const SearchBar: React.FC = () => {
 
     const handleArrowUp = () => {
         if (suggestions.length > 0) {
-            const newIndex = selectedSuggestion !== null ? Math.max(selectedSuggestionIndex - 1, 0) : suggestions.length - 1;
+            const newIndex = selectedSuggestionIndex !== null ? Math.max(selectedSuggestionIndex - 1, 0) : suggestions.length - 1;
             setSelectedSuggestionIndex(newIndex);
             setSelectedSuggestion(suggestions[newIndex]);
         }
@@ -105,60 +108,64 @@ const SearchBar: React.FC = () => {
 
     useEffect(() => {
         handleSearch()
+        setIsloading(true)
     }, [selectedPokemonChange])
 
     return (
-        <div style={{ position: 'relative' }}>
-            <div style={{ display: 'flex', width: '100%', position: 'relative' }}>
-                <Input
-                    type="text"
-                    value={searchTerm}
-                    onChange={(e) => handleInputChange(e.target.value)}
-                    placeholder="Search for a Pokémon"
-                    style={{
-                        border: '2px solid white',
-                        padding: '0 20px',
-                        width: '100%',
-                        borderRadius: '20px'
-                    }}
-                    onKeyDown={handleKeyDown}
-                />
-                <button
-                    onClick={handleSearch}
-                    style={{
-                        border: '2px solid white',
-                        padding: '5px 15px',
-                        borderRadius: '20px',
-                        backgroundColor: 'black',
-                        margin: '0 2.5%',
-                        cursor: 'pointer',
-                    }}
-                >
-                    Search
-                </button>
+        <>
+            {/* {isLoading === true ? <Loader /> : null} */}
+            <div style={{ position: 'relative' }}>
+                <div style={{ display: 'flex', width: '100%', position: 'relative' }}>
+                    <Input
+                        type="text"
+                        value={searchTerm}
+                        onChange={(e) => handleInputChange(e.target.value)}
+                        placeholder="Search for a Pokémon"
+                        style={{
+                            border: '2px solid white',
+                            padding: '0 20px',
+                            width: '100%',
+                            borderRadius: '20px'
+                        }}
+                        onKeyDown={handleKeyDown}
+                    />
+                    <button
+                        onClick={handleSearch}
+                        style={{
+                            border: '2px solid white',
+                            padding: '5px 15px',
+                            borderRadius: '20px',
+                            backgroundColor: 'black',
+                            margin: '0 2.5%',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        Search
+                    </button>
+                </div>
+                {suggestions.length > 0 && (
+                    <ul style={suggestionStyle}>
+                        {suggestions.map((suggestion, index) => (
+                            <li
+                                key={index}
+                                onClick={() => handleSuggestionClick(suggestion)}
+                                onMouseEnter={() => handleSuggestionMouseEnter(index)}
+                                onMouseLeave={handleSuggestionMouseLeave}
+                                style={{
+                                    padding: '8px',
+                                    cursor: 'pointer',
+                                    backgroundColor: selectedSuggestionIndex === index ? 'rgb(128, 163, 250)' : 'rgb(110, 150, 180)',
+                                    textTransform: 'capitalize',
+                                    transition: 'background-color 0.3s ease',
+                                }}
+                            >
+                                {suggestion}
+                            </li>
+                        ))}
+                    </ul>
+                )}
             </div>
-            {suggestions.length > 0 && (
-                <ul style={suggestionStyle}>
-                    {suggestions.map((suggestion, index) => (
-                        <li
-                            key={index}
-                            onClick={() => handleSuggestionClick(suggestion)}
-                            onMouseEnter={() => handleSuggestionMouseEnter(index)}
-                            onMouseLeave={handleSuggestionMouseLeave}
-                            style={{
-                                padding: '8px',
-                                cursor: 'pointer',
-                                backgroundColor: selectedSuggestionIndex === index ? 'rgb(128, 163, 250)' : 'rgb(110, 150, 180)',
-                                textTransform: 'capitalize',
-                                transition: 'background-color 0.3s ease',
-                            }}
-                        >
-                            {suggestion}
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
+        </>
     );
 };
 

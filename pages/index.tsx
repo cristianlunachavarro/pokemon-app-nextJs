@@ -26,9 +26,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const pokemons = data.results.map((p, i) => ({
     ...p,
     id: i + 1,
-    img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${
-      i + 1
-    }.svg`,
+    img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${i + 1
+      }.svg`,
   }));
   return { props: { pokemons: pokemons } };
 };

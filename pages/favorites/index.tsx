@@ -45,7 +45,7 @@ const FavoritesPage = () => {
     }
   }, [favoritePokemons, changePokemons]);
 
-
+  console.log('pokemons', pokemons)
   return (
     <Layout>
       {pokemons.length === 0 ? (
