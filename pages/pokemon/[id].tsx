@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetStaticPaths, GetStaticProps, GetStaticPropsResult } from "next";
 import { Button, Card, Container, Grid, Text, Image } from "@nextui-org/react";
 
 import conffeti from "canvas-confetti";
@@ -14,6 +14,7 @@ interface props {
 }
 
 const PokemonPage: FC<props> = ({ pokemon }) => {
+  console.log("Pokemon -->", pokemon);
   const { name, sprites, id } = pokemon;
   const { other } = sprites;
   const [isInFavorites, setIsInFavorites] = useState(
@@ -123,24 +124,31 @@ export const getStaticPaths: GetStaticPaths = async (context) => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { id } = params as { id: string };
 
-  const pokemon = await getPokemonInfo(id);
+  try {
+    const pokemon = await getPokemonInfo(id);
 
-  if (!pokemon) {
+    if (!pokemon) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      } as GetStaticPropsResult<{ [key: string]: any }>;
+    }
+
     return {
-      redirect: {
-        destination: "/",
-        permanent: false,
+      props: {
+        pokemon,
       },
-    };
+      revalidate: 86400,
+    } as GetStaticPropsResult<{ [key: string]: any }>;
+  } catch (error) {
+    console.log("Error fetching a pokemon");
+    
+    return {
+      notFound: true,
+    } as GetStaticPropsResult<{ [key: string]: any }>;
   }
-
-  return {
-    props: {
-      pokemon,
-    },
-    // time the pokemon will re-generate
-    revalidate: 86400,
-  };
 };
 
 export default PokemonPage;
