@@ -19,23 +19,26 @@ const FavoritesPage = () => {
 
     const updatedFavorites = getFavorites();
 
-    const updatedPokemons = await Promise.all(updatedFavorites.map(async (pokeId: string) => {
-      const { data } = await pokeApi.get<Pokemon>(`pokemon/${pokeId}`);
-      return data;
-    }));
+    const updatedPokemons = await Promise.all(
+      updatedFavorites.map(async (pokeId: string) => {
+        const { data } = await pokeApi.get<Pokemon>(`pokemon/${pokeId}`);
+        return data;
+      })
+    );
     setPokemons(updatedPokemons);
 
     setChangePokemons(!changePokemons);
   };
 
-
   useLayoutEffect(() => {
     const fetchFavorites = async () => {
       const favorites = getFavorites();
-      const fetchedPokemons = await Promise.all(favorites.map(async (pokeId: string) => {
-        const { data } = await pokeApi.get<Pokemon>(`pokemon/${pokeId}`);
-        return data;
-      }));
+      const fetchedPokemons = await Promise.all(
+        favorites.map(async (pokeId: string) => {
+          const { data } = await pokeApi.get<Pokemon>(`pokemon/${pokeId}`);
+          return data;
+        })
+      );
 
       setPokemons(fetchedPokemons);
     };
@@ -45,13 +48,15 @@ const FavoritesPage = () => {
     }
   }, [favoritePokemons, changePokemons]);
 
-  console.log('pokemons', pokemons)
   return (
     <Layout>
       {pokemons.length === 0 ? (
         <EmptyFavorites />
       ) : (
-        <Favorites pokemons={pokemons} handleDeletePokemon={handleDeletePokemon} />
+        <Favorites
+          pokemons={pokemons}
+          handleDeletePokemon={handleDeletePokemon}
+        />
       )}
     </Layout>
   );

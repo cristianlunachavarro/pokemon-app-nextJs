@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { ReactNode } from "react";
 
 import { NextPage } from "next";
@@ -16,7 +16,15 @@ type AppPropsWithLayout = AppProps & {
 };
 
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const getLayout = Component.getLayout ?? ((page) => page);
 
-  return <Providers>{getLayout(<Component {...pageProps} />)}</Providers>;
+  return (
+    isClient && <Providers>{getLayout(<Component {...pageProps} />)}</Providers>
+  );
 }

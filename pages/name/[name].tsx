@@ -10,14 +10,43 @@ import Layout from "@/components/layout";
 import conffeti from "canvas-confetti";
 
 import { getPokemonInfo, pokemonIsInFavorites, toggleFavorites } from "@/utils";
+import { typeColors } from "@/utils/typeColors";
 
 interface props {
   pokemon: Pokemon;
 }
 
-const PokemonByNamePage: FC<props> = ({ pokemon }) => {
+interface typeProps {
+  type: {
+    name: string;
+  };
+  slot: number;
+}
 
-  const { name, sprites, id } = pokemon;
+interface statsProps {
+  stat: {
+    name: string;
+  };
+  base_stat: number;
+}
+
+const gridItemStyle = {
+  border: "1px solid white",
+  borderRadius: "20px",
+  padding: "0 2% 0 2%",
+  marginRight: "1%",
+
+};
+
+const textStyle = {
+  marginRight: "5%",
+  padding: "0 0",
+  fontWeight: "bold",
+};
+
+const PokemonByNamePage: FC<props> = ({ pokemon }) => {
+  const { name, sprites, id, types, stats } = pokemon;
+
   const { other } = sprites;
 
   const [isInFavorites, setIsInFavorites] = useState(pokemonIsInFavorites(id));
@@ -53,6 +82,37 @@ const PokemonByNamePage: FC<props> = ({ pokemon }) => {
                 height={200}
               />
             </Card.Body>
+            <Container
+              direction="row"
+              display="flex"
+              gap={0}
+              style={{ marginTop: "5%" }}
+            >
+              <Image
+                src={sprites.front_default}
+                alt={name}
+                width={50}
+                height={50}
+              />
+              <Image
+                src={sprites.back_default}
+                alt={name}
+                width={50}
+                height={50}
+              />
+              <Image
+                src={sprites.front_shiny}
+                alt={name}
+                width={50}
+                height={50}
+              />
+              <Image
+                src={sprites.back_shiny}
+                alt={name}
+                width={50}
+                height={50}
+              />
+            </Container>
           </Card>
         </Grid>
 
@@ -75,34 +135,57 @@ const PokemonByNamePage: FC<props> = ({ pokemon }) => {
             </Card.Header>
 
             <Card.Body>
-              <Text size={30}>Sprites:</Text>
-
-              <Container direction="row" display="flex" gap={0}>
-                <Image
-                  src={sprites.front_default}
-                  alt={name}
-                  width={100}
-                  height={100}
-                />
-                <Image
-                  src={sprites.back_default}
-                  alt={name}
-                  width={100}
-                  height={100}
-                />
-                <Image
-                  src={sprites.front_shiny}
-                  alt={name}
-                  width={100}
-                  height={100}
-                />
-                <Image
-                  src={sprites.back_shiny}
-                  alt={name}
-                  width={100}
-                  height={100}
-                />
+              <Text size={30} css={{ marginBottom: "2%" }}>
+                Sprites
+              </Text>
+              <Container direction="column" display="flex" gap={0}>
+                <div style={{ width: "30%" }}>
+                  {types &&
+                    types.map((t: typeProps, index: React.Key) => (
+                      <div
+                        key={index}
+                        style={{
+                          backgroundColor: typeColors[t.type.name],
+                          padding: "0% 4%",
+                          borderRadius: "20px",
+                          width: "100%",
+                          textAlign: "center",
+                          marginBottom: "3%",
+                        }}
+                      >
+                        <Text transform="capitalize">{t.type.name}</Text>
+                      </div>
+                    ))}
+                </div>
               </Container>
+              <Text size={30} css={{ marginBottom: "2%" }}>
+                Habilities
+              </Text>
+              <Grid.Container display="flex" align="center" gap={2} >
+                {stats.map((stat: statsProps, index: React.Key) => (
+                  <Grid
+                    key={index}
+                    xs={12}
+                    sm={4}
+                    md={4}
+                    lg={3}
+                    xl={3}
+                    css={gridItemStyle}
+                  >
+                    <Text
+                      size={15}
+                      transform="uppercase"
+                      css={textStyle}
+                      color="secondary"
+                    >
+                      {`${stat.stat.name}: `}
+                    </Text>
+                    <Text size={15} css={textStyle}>
+                      {stat.base_stat}
+                    </Text>
+                  </Grid>
+                ))}
+              </Grid.Container>
             </Card.Body>
           </Card>
         </Grid>
