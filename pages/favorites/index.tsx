@@ -5,9 +5,11 @@ import { pokeApi } from "@/api";
 import { Pokemon } from "@/interfaces";
 import Favorites from "@/components/favorites/Favorites";
 import EmptyFavorites from "@/components/favorites/EmptyFavorites";
+import Loader from "@/components/ui/loader";
 
 const FavoritesPage = () => {
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+  const [loading, setLoading] = useState(true); // Nuevo estado para el Loader
   const [changePokemons, setChangePokemons] = useState(false);
 
   const favoritePokemons = useMemo(() => {
@@ -32,6 +34,8 @@ const FavoritesPage = () => {
 
   useLayoutEffect(() => {
     const fetchFavorites = async () => {
+      setLoading(true);
+
       const favorites = getFavorites();
       const fetchedPokemons = await Promise.all(
         favorites.map(async (pokeId: string) => {
@@ -41,6 +45,7 @@ const FavoritesPage = () => {
       );
 
       setPokemons(fetchedPokemons);
+      setLoading(false);
     };
 
     if (typeof window !== "undefined") {
@@ -50,7 +55,9 @@ const FavoritesPage = () => {
 
   return (
     <Layout>
-      {pokemons.length === 0 ? (
+      {loading ? (
+        <Loader />
+      ) : pokemons.length === 0 ? (
         <EmptyFavorites />
       ) : (
         <Favorites

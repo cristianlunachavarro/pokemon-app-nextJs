@@ -3,7 +3,6 @@ import { ReactElement } from "react";
 
 import { NavBar } from "../ui";
 import Head from "next/head";
-import Loader from "../ui/loader";
 
 type layoutProps = {
   children: ReactElement;

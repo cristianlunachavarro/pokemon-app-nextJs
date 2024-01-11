@@ -35,7 +35,6 @@ const gridItemStyle = {
   borderRadius: "20px",
   padding: "0 2% 0 2%",
   marginRight: "1%",
-
 };
 
 const textStyle = {
@@ -161,7 +160,7 @@ const PokemonByNamePage: FC<props> = ({ pokemon }) => {
               <Text size={30} css={{ marginBottom: "2%" }}>
                 Habilities
               </Text>
-              <Grid.Container display="flex" align="center" gap={2} >
+              <Grid.Container display="flex" align="center" gap={2}>
                 {stats.map((stat: statsProps, index: React.Key) => (
                   <Grid
                     key={index}
