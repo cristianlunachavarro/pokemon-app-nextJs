@@ -19,6 +19,7 @@
     "canvas-confetti": "^1.9.0",
     "framer-motion": "^10.16.4",
     "install": "^0.13.0",
+    "mongodb": "^6.3.0",
     "next": "latest",
     "postcss": "^8.4.31",
     "react": "latest",
