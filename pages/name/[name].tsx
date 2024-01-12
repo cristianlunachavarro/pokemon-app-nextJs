@@ -45,7 +45,7 @@ const textStyle = {
 
 const PokemonByNamePage: FC<props> = ({ pokemon }) => {
   const { name, sprites, id, types, stats } = pokemon;
-
+  
   const { other } = sprites;
 
   const [isInFavorites, setIsInFavorites] = useState(pokemonIsInFavorites(id));
@@ -135,7 +135,7 @@ const PokemonByNamePage: FC<props> = ({ pokemon }) => {
 
             <Card.Body>
               <Text size={30} css={{ marginBottom: "2%" }}>
-                Sprites
+                Types
               </Text>
               <Container direction="column" display="flex" gap={0}>
                 <div style={{ width: "30%" }}>

@@ -7,7 +7,7 @@ export const getPokemonInfo = async (nameOrId: string) => {
       `/pokemon/${nameOrId.toLowerCase()}`
     );
 
-    const { sprites, name, id, abilities, stats } = data;
+    const { sprites, name, id, abilities, stats, types } = data;
 
     return {
       id,
@@ -15,6 +15,7 @@ export const getPokemonInfo = async (nameOrId: string) => {
       name,
       abilities,
       stats,
+      types
     };
   } catch (err) {
     return null;
