@@ -15,7 +15,7 @@ const goToPokemon = () => {
 }
 
   return (
-    <Grid key={id} sx={6} sm={3} md={2}>
+    <Grid key={id} sx={12} sm={3} md={2}>
       <Card hoverable clickable onClick={goToPokemon}>
         <Card.Body>
           <Card.Image src={img} alt={name} width="100%" height={140} />

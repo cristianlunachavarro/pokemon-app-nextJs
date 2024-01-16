@@ -13,13 +13,16 @@ const EmptyFavorites = () => {
         alignSelf: "center",
       }}
     >
-      <Text> No hay favoritos </Text>
+      <Text css={{ fontWeight: "bold", fontSize: "20px" }}>
+        {" "}
+        EMPTY FAVORITES{" "}
+      </Text>
       <Image
         src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/1.svg"
         alt="poke"
         height={250}
         width={250}
-        css={{ opacity: "0.1" }}
+        css={{ opacity: "0.3" }}
       />
     </Container>
   );

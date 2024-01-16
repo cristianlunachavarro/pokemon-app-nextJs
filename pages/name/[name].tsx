@@ -11,6 +11,7 @@ import conffeti from "canvas-confetti";
 
 import { getPokemonInfo, pokemonIsInFavorites, toggleFavorites } from "@/utils";
 import { typeColors } from "@/utils/typeColors";
+import useMobile from "@/utils/hooks/useMobile";
 
 interface props {
   pokemon: Pokemon;
@@ -43,12 +44,21 @@ const textStyle = {
   fontWeight: "bold",
 };
 
+const stylePhone = {
+  display: "flex",
+  justifyContent: "center",
+  width: "80%",
+  alignSelf: "center",
+  textAlign: "center",
+};
+
 const PokemonByNamePage: FC<props> = ({ pokemon }) => {
   const { name, sprites, id, types, stats } = pokemon;
-  
   const { other } = sprites;
 
   const [isInFavorites, setIsInFavorites] = useState(pokemonIsInFavorites(id));
+
+  const isMobile = useMobile();
 
   const handleToggleFavorites = () => {
     toggleFavorites(id);
@@ -73,6 +83,9 @@ const PokemonByNamePage: FC<props> = ({ pokemon }) => {
       <Grid.Container css={{ marginTop: "5px" }} gap={2}>
         <Grid xs={12} sm={4}>
           <Card hoverable css={{ padding: "30px" }}>
+            <Text h2 transform="uppercase" css={{ textAlign: "center" }}>
+              {name}
+            </Text>
             <Card.Body>
               <Card.Image
                 src={other?.dream_world.front_default || "/no-image.png"}
@@ -112,6 +125,13 @@ const PokemonByNamePage: FC<props> = ({ pokemon }) => {
                 height={50}
               />
             </Container>
+            <Button
+              color="gradient"
+              ghost={!isInFavorites}
+              onClick={handleToggleFavorites}
+            >
+              {isInFavorites ? "Remove from favorites" : "Save to favorites"}
+            </Button>
           </Card>
         </Grid>
 
@@ -120,25 +140,36 @@ const PokemonByNamePage: FC<props> = ({ pokemon }) => {
             <Card.Header
               css={{ display: "flex", justifyContent: "space-between" }}
             >
-              <Text h1 transform="capitalize">
-                {name}
-              </Text>
+              {!isMobile && (
+                <Text h1 transform="capitalize">
+                  {name}
+                </Text>
+              )}
 
-              <Button
-                color="gradient"
-                ghost={!isInFavorites}
-                onClick={handleToggleFavorites}
-              >
-                {isInFavorites ? "Remove from favorites" : "Save to favorites"}
-              </Button>
+              {!isMobile && (
+                <Button
+                  color="gradient"
+                  ghost={!isInFavorites}
+                  onClick={handleToggleFavorites}
+                >
+                  {isInFavorites
+                    ? "Remove from favorites"
+                    : "Save to favorites"}
+                </Button>
+              )}
             </Card.Header>
-
-            <Card.Body>
+            <Card.Body style={isMobile ? stylePhone : {}}>
               <Text size={30} css={{ marginBottom: "2%" }}>
                 Types
               </Text>
-              <Container direction="column" display="flex" gap={0}>
-                <div style={{ width: "30%" }}>
+              <Container
+                direction="column"
+                display="flex"
+                gap={0}
+                style={{ alignContent: isMobile ? "center" : "initial" }}
+              >
+                {" "}
+                <div style={{ width: isMobile ? "70%" : "30%" }}>
                   {types &&
                     types.map((t: typeProps, index: React.Key) => (
                       <div
@@ -157,6 +188,7 @@ const PokemonByNamePage: FC<props> = ({ pokemon }) => {
                     ))}
                 </div>
               </Container>
+
               <Text size={30} css={{ marginBottom: "2%" }}>
                 Habilities
               </Text>
